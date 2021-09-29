@@ -1,0 +1,123 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+ref <- readRDS("/home/lab401/Desktop/Bioinf_job/Analyses/Tool AMD/data/reference/genetic_risk.rds")
+df <- data.frame(gene = unique(ref$gene), selected_genotype = NA, or.norm = NA)
+```
+
+```{r}
+# select only useful variables
+ref.util = ref %>% 
+  dplyr::select(gene, genotipi, or.normalizzato, frequenza.pop.gen)
+
+# set an empty dataframe
+combs = data.frame(comb     = numeric(),
+                   gene     = character(),
+                   genotype = character(),
+                   or       = numeric())
+
+# set a counter to index combinations
+counter = 0
+
+# for loop to create and write all combinations
+for (i in ref.util$genotipi[ref.util$gene == "ARMS2"]) {
+  for (ii in ref.util$genotipi[ref.util$gene == "CFH"]){
+    for (iii in ref.util$genotipi[ref.util$gene == "IL8"]){
+      for (iv in ref.util$genotipi[ref.util$gene == "VEGFA"]){
+        for (v in ref.util$genotipi[ref.util$gene == "TIMP3"]){
+          for (vi in ref.util$genotipi[ref.util$gene == "SLC16A8"]){
+            for (vii in ref.util$genotipi[ref.util$gene == "COL8A1"]){
+              for (viii in ref.util$genotipi[ref.util$gene == "RAD51B"]){
+                
+                # increment counter to know combination number
+                counter = counter + 1
+                
+                # add row to dataframe
+                combs = combs %>% 
+                  add_row(comb = counter,
+                          gene = c("ARMS2", "CFH", "IL8", "VEGFA", "TIMP3", "SLC16A8", "COL8A1", "RAD51B"),
+                          genotype = c(i, ii, iii, iv, v, vi, vii, viii), 
+                          or = c(ref.util$or.normalizzato[ref.util$gene == "ARMS2"     & ref.util$genotipi == i],
+                                 ref.util$or.normalizzato[ref.util$gene == "CFH"       & ref.util$genotipi == ii],
+                                 ref.util$or.normalizzato[ref.util$gene == "IL8"       & ref.util$genotipi == iii],
+                                 ref.util$or.normalizzato[ref.util$gene == "VEGFA"     & ref.util$genotipi == iv],
+                                 ref.util$or.normalizzato[ref.util$gene == "TIMP3"     & ref.util$genotipi == v],
+                                 ref.util$or.normalizzato[ref.util$gene == "SLC16A8"   & ref.util$genotipi == vi],
+                                 ref.util$or.normalizzato[ref.util$gene == "COL8A1"    & ref.util$genotipi == vii],
+                                 ref.util$or.normalizzato[ref.util$gene == "RAD51B"    & ref.util$genotipi == viii]))
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# calculate OR for each combination
+combs = combs %>% 
+  group_by(comb) %>% 
+  mutate(comb.or = prod(or)) %>% 
+  ungroup()
+```
+
+# Manipulate dataframe
+```{r}
+combs = combs %>% 
+  dplyr::select(comb, gene, genotype, comb.or) %>% 
+  pivot_wider(names_from = gene, values_from = genotype) %>% 
+  dplyr::select(ARMS2, CFH, IL8, VEGFA, TIMP3, SLC16A8, COL8A1, RAD51B, comb.or)  %>% 
+  arrange(comb.or) %>% 
+  mutate(log.comb.or = log(comb.or),
+         index = 1)
+```
+
+# Graph try
+```{r}
+risk = 1000
+
+combs %>% 
+  ggplot() +
+  aes(x = log.comb.or, y = index) +
+  geom_line(aes(color = log.comb.or,
+                size = 5)) +
+  scale_colour_gradient2(low = "green2",
+                         mid = "yellow2",
+                         high = "red2")+
+  geom_point(aes(x = log(1000), y = 1), 
+             color = "black",
+             shape = 18,
+             size = 3) +
+  geom_segment(aes(x = 0, xend = 0, y = 0.975, yend = 1.025)) +
+  theme_minimal() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = "none",
+        plot.background = element_rect(fill = "white"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())
+
+ggsave(filename = "/home/lab401/Analyses/Tool AMD/data/plots/plot.png",
+         units = "cm",
+         width = 14,
+         height = 1,
+       scale = 1)
+```
+
+# export
+```{r}
+openxlsx::write.xlsx(combs, file = "/home/lab401/Analyses/Tool AMD/data/reference/combinations.xlsx")
+```
+

@@ -1,0 +1,10 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+genetic_risk <- read.xlsx("/home/lab401/Desktop/Bioinf_job/Analyses/Tool AMD/data/reference/Rischio genetico.xlsx")
+saveRDS(genetic_risk, file = "/home/lab401/Desktop/Bioinf_job/Analyses/Tool AMD/data/reference/genetic_risk.rds")
+```
+
