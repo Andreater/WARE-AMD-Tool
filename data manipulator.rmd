@@ -1,0 +1,170 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+# Libraries
+```{r}
+library(tidyverse)
+library(openxlsx)
+library(Amelia)
+library(ggsignif)
+```
+
+# Data import
+```{r}
+raw_df_casi <- read.xlsx("/home/lab401/Analyses/Tool AMD/data/reference/Genotipi Casi_SNPs associati.xlsx",
+                     rowNames = T,
+                     fillMergedCells = T)
+
+raw_df_ctrl <- read.xlsx("/home/lab401/Analyses/Tool AMD/data/reference/Genotipi CN_SNPs associati.xlsx",
+                     rowNames = T,
+                     fillMergedCells = T)
+
+combs <- read.xlsx("/home/lab401/Analyses/Tool AMD/data/reference/combinations.xlsx")
+
+combs_associate = combs %>% 
+  arrange(ARMS2, CFH, IL8, VEGFA, TIMP3, SLC16A8, COL8A1, RAD51B) %>% 
+  mutate(combination = paste(ARMS2, CFH, IL8, VEGFA, TIMP3, SLC16A8, COL8A1, RAD51B, sep = "")) %>% 
+  dplyr::select(combination, comb.or, log.comb.or)
+```
+
+# Manipulate cases
+
+```{r}
+df_casi = raw_df_casi
+
+names(df_casi) = paste(names(df_casi), 1:length(names(df_casi)), sep = "_")
+
+df_casi = df_casi %>% 
+  mutate(CFH     = paste(CFH_rs1061170_1, CFH_rs1061170_2, sep = ""),
+         ARMS2   = paste(ARMS2_rs10490924_3, ARMS2_rs10490924_4, sep = ""),
+         IL8     = paste(IL8_rs2227306_5, IL8_rs2227306_6, sep = ""),
+         TIMP3   = paste(`TIMP3_rs5749482.G/C_7`, `TIMP3_rs5749482.G/C_8`, sep = ""),
+         RAD51B  = paste(`RAD51B_rs8017304.A/G_9`, `RAD51B_rs8017304.A/G_10`, sep = ""),
+         SLC16A8 = paste(`SLC16A8_rs8135665.C/T_11`, `SLC16A8_rs8135665.C/T_12`, sep = ""),
+         COL8A1  = paste(`COL8A1_rs13081855.G/T_13`, `COL8A1_rs13081855.G/T_14`, sep = ""),
+         VEGFA   = paste(`VEGFA_rs943080.C/T_15`, `VEGFA_rs943080.C/T_16`, sep = "")) %>% 
+  dplyr::select(ARMS2,
+                CFH,
+                IL8,
+                VEGFA,
+                TIMP3,
+                SLC16A8,
+                COL8A1,
+                RAD51B) %>% 
+  mutate(ARMS2 = ifelse(ARMS2 == "TG", "GT", ARMS2),
+         CFH   = ifelse(CFH   == "TC", "CT", CFH),
+         IL8   = ifelse(IL8   == "TC", "CT", IL8),
+         VEGFA = ifelse(VEGFA == "TC", "CT", VEGFA),
+         TIMP3 = ifelse(TIMP3 == "CG", "GC", TIMP3),
+         SLC16A8 = ifelse(SLC16A8 == "TC", "CT", SLC16A8),
+         COL8A1  = ifelse(COL8A1 == "TG", "GT", COL8A1),
+         RAD51B  = ifelse(RAD51B == "GA", "AG", RAD51B))
+
+df_casi = sapply(df_casi, function(x) ifelse(x == "NANA", NA, x))
+df_casi = as.data.frame(df_casi)
+
+#missmap(df_casi)
+cat(paste0("Tot subjects = ", nrow(df_casi), "\n"))
+cat(paste0("Tot NAs = ", sum(rowSums(is.na(df_casi)) != 0), "\n\n"))
+
+df_casi = na.omit(df_casi)
+cat(paste0("Tot subjects = ", nrow(df_casi), "\n"))
+cat(paste0("Tot NAs = ", sum(rowSums(is.na(df_casi)) != 0), "\n"))
+#missmap(df_casi)
+
+cat(paste0("Tot cases = ", nrow(df_casi)))
+
+df_casi_associate = df_casi %>% 
+  arrange(ARMS2, CFH, IL8, VEGFA, TIMP3, SLC16A8, COL8A1, RAD51B) %>% 
+  mutate(combination = paste(ARMS2, CFH, IL8, VEGFA, TIMP3, SLC16A8, COL8A1, RAD51B, sep = "")) %>% 
+  dplyr::select(combination) 
+
+df_casi_associate = left_join(df_casi_associate, combs_associate, by = "combination")
+```
+
+# Manipulate controls
+
+```{r}
+df_ctrl = raw_df_ctrl
+
+names(df_ctrl) = paste(names(df_ctrl), 1:length(names(df_ctrl)), sep = "_")
+
+df_ctrl = df_ctrl %>% 
+  mutate(CFH     = str_squish(paste(`CFH.T/C_1`, `CFH.T/C_2`, sep = "")),
+         ARMS2   = str_squish(paste(`ARMS2.G/T_3`, `ARMS2.G/T_4`, sep = "")),
+         IL8     = str_squish(paste(`IL8_rs2227306.C/T_5`, `IL8_rs2227306.C/T_6`, sep = "")),
+         TIMP3   = str_squish(paste(`TIMP3.C/G_11`, `TIMP3.C/G_12`, sep = "")),
+         RAD51B  = str_squish(paste(`RAD51B.A/G_15`, `RAD51B.A/G_16`, sep = "")),
+         SLC16A8 = str_squish(paste(`SLC16A8.C/T_13`, `SLC16A8.C/T_14`, sep = "")),
+         COL8A1  = str_squish(paste(`COL8A1.G/T_9`, `COL8A1.G/T_10`, sep = "")),
+         VEGFA   = str_squish(paste(`VEGFA.C/T_7`, `VEGFA.C/T_8`, sep = ""))) %>% 
+  dplyr::select(ARMS2,
+                CFH,
+                IL8,
+                VEGFA,
+                TIMP3,
+                SLC16A8,
+                COL8A1,
+                RAD51B) %>% 
+  mutate(ARMS2 = ifelse(ARMS2 == "TG", "GT", ARMS2),
+         CFH   = ifelse(CFH   == "TC", "CT", CFH),
+         IL8   = ifelse(IL8   == "TC", "CT", IL8),
+         VEGFA = ifelse(VEGFA == "TC", "CT", VEGFA),
+         TIMP3 = ifelse(TIMP3 == "CG", "GC", TIMP3),
+         SLC16A8 = ifelse(SLC16A8 == "TC", "CT", SLC16A8),
+         COL8A1  = ifelse(COL8A1 == "TG", "GT", COL8A1),
+         RAD51B  = ifelse(RAD51B == "GA", "AG", RAD51B))
+
+df_ctrl = sapply(df_ctrl, function(x) ifelse(x == "NANA", NA, x))
+df_ctrl = as.data.frame(df_ctrl)
+# df_ctrl$ARMS2 = na_if(df_ctrl$ARMS2, "")
+
+df_ctrl = sapply(df_ctrl, function(x) na_if(x, ""))
+df_ctrl = as.data.frame(df_ctrl)
+
+#missmap(df_ctrl)
+cat(paste0("Tot subjects = ", nrow(df_ctrl), "\n"))
+cat(paste0("Tot NAs = ", sum(rowSums(is.na(df_ctrl)) != 0), "\n\n"))
+
+df_ctrl = na.omit(df_ctrl)
+cat(paste0("Tot subjects = ", nrow(df_ctrl), "\n"))
+cat(paste0("Tot NAs = ", sum(rowSums(is.na(df_ctrl)) != 0), "\n"))
+#missmap(df_ctrl)
+
+cat(paste0("Tot controls = ", nrow(df_ctrl)))
+
+df_ctrl_associate = df_ctrl %>% 
+  arrange(ARMS2, CFH, IL8, VEGFA, TIMP3, SLC16A8, COL8A1, RAD51B) %>% 
+  mutate(combination = paste(ARMS2, CFH, IL8, VEGFA, TIMP3, SLC16A8, COL8A1, RAD51B, sep = "")) %>% 
+  dplyr::select(combination) 
+
+df_ctrl_associate = left_join(df_ctrl_associate, combs_associate, by = "combination")
+```
+
+# ORs comparison between classes
+
+```{r}
+df_casi_associate = df_casi_associate %>% 
+  mutate(class = "AMD")
+
+df_ctrl_associate = df_ctrl_associate %>% 
+  mutate(class = "GENPOP")
+
+merged = rbind(df_casi_associate, df_ctrl_associate)
+
+merged %>%
+  ggplot() +
+  aes(x = class, y = log.comb.or, fill = class) +
+  geom_boxplot() +
+  geom_signif(comparisons = list(c("AMD", "GENPOP")))
+```
+
+# Export
+
+```{r}
+write.xlsx(df_casi_associate, file = "/home/lab401/Analyses/Tool AMD/data/reference/cases risks.xlsx")
+write.xlsx(df_ctrl_associate, file = "/home/lab401/Analyses/Tool AMD/data/reference/ctrls risks.xlsx")
+```
+
