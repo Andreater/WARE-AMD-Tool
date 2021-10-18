@@ -20,7 +20,7 @@ Genetic risk loci were identified based on ... and environmental risk ...
  1. Download [R](https://cran.r-project.org/) for your operating system (Windows, Linux or macOS) and install using the default settings.
  2. Download [RStudio](https://www.rstudio.com/products/rstudio/download/) Free Desktop version and install using the default settings.
 
-- To use the **SoftwareName** software, download this repository from [here](https://deadlink) or by clicking the green `Code` button and selecting `Download ZIP`.
+- To use the **SoftwareName** software, download this repository from [here](https://github.com/Andreater/AMD-Risk-Tool/archive/refs/heads/main.zip) or by clicking the green `Code` button and selecting `Download ZIP`.
 - Unpack the downloaded ZIP file to your preferred path.
 - Open the `dashboard.r` file using RStudio, then click on the green `run app` button at the top-right corner of the central panel window, as shown in the image below.
 
