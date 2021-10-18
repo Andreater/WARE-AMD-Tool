@@ -50,24 +50,6 @@ risk_plot <- function(combs, calculated_risk) {
           panel.grid.minor = element_blank())
 }
 
-############# color vector selector
-select_colors <- function(df){
-  if (all(df$Class == c("Greater", "Less", "Equal"))) {
-    colvec <-  c(colorpalette[3], colorpalette[1], colorpalette[4])
-  } else if (all(df$Class == c("Less"))) {
-    colvec <- c(colorpalette[1])
-  } else if (all(df$Class == c("Greater"))) {
-    colvec <- c(colorpalette[3])
-  } else if (all(df$Class == c("Less", "Equal"))) {
-    colvec <- c(colorpalette[1], colorpalette[4])
-  } else if (all(df$Class == c("Greater", "Equal"))) {
-    colvec <- c(colorpalette[3], colorpalette[4])
-  } else {                                         # in this condition df$Class == c("Less", "Greater")
-    colvec <- c(colorpalette[3], colorpalette[1])
-  }
-  return(colvec)
-}
-
 ################# PIES ##################
 ##### empties
 empty_pie_chart <- function() {

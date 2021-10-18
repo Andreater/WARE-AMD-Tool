@@ -2,6 +2,7 @@ source("libraries.r")
 source("references.r")
 source("parameters.r")
 source("plots.r")
+source("funcs.r")
 
 # Disable scientific notation
 options(scipen=999)
@@ -214,7 +215,7 @@ ui <- dashboardPage(
                   
                   textInput(inputId = "riskText_env",
                             label   = NULL,
-                            value   = "Are you exposed to any environmental risk factor?")
+                            value   = "What's your environmental risk for AMD?")
                 )
               )
       )
@@ -242,7 +243,8 @@ server <- function(input, output, session) {
   pl0_env <- reactive({empty_risk_plot(combs_env)})
   
   # Show plots
-  output$plot1 <- renderPlot({pl0()}, height = plot_dim)
+  output$plot1 <- renderPlot({pl0()}, 
+                             height = plot_dim)
   
   output$piecases <- renderPlot({pie_empty1()})
   output$piectrl  <- renderPlot({pie_empty2()})
@@ -253,12 +255,13 @@ server <- function(input, output, session) {
   output$densityctrl  <- renderPlot({density2_empty()})
   
   # for env tab
-  output$plot1_env <- renderPlot({pl0_env()}, height = plot_dim)
+  output$plot1_env <- renderPlot({pl0_env()},
+                                 height = plot_dim)
   
   # Update text box to show info about risk
   updateTextInput(session = session, 
                   inputId = "riskText",
-                  value   = "Are you at risk of developing AMD?")
+                  value   = "What's your genetic risk for AMD?")
   
   #########
   # reset button
@@ -309,6 +312,11 @@ server <- function(input, output, session) {
                     inputId = "inText",
                     value   = "")
     
+    # Update text box to show info about risk
+    updateTextInput(session = session, 
+                    inputId = "riskText",
+                    value   = "What's your genetic risk for AMD?")
+    
     # set empty plots
     pl0 <- reactive({empty_risk_plot(combs)})
     
@@ -319,7 +327,6 @@ server <- function(input, output, session) {
     
     density1_empty <- reactive({empty_density_plot_cases(risk)})
     density2_empty <- reactive({empty_density_plot_ctrl(risk)})
-    
     
     # Show plots
     output$plot1 <- renderPlot({pl0()}, height = plot_dim)
@@ -392,6 +399,18 @@ server <- function(input, output, session) {
       
       output$densitycases  <- renderPlot({density1()})
       output$densityctrl  <- renderPlot({density2()})
+      
+      
+      # Update text box to show info about risk
+      z_score = z_score_calc(risk = risk, or_vec = df_casi$comb.or)
+      
+      updateTextInput(session = session, 
+                      inputId = "riskText",
+                      value   = paste0("With a risk = ",
+                                       risk,
+                                       " your subject is ",
+                                       z_score,
+                                       " standard deviations away from the mean risk for AMD population."))
     }
   })
   
@@ -417,6 +436,11 @@ server <- function(input, output, session) {
     # show plot
     ## for env tab
     output$plot1_env <- renderPlot({pl0_env()}, height = plot_dim)
+    
+    # set risk text box
+    updateTextInput(session = session, 
+                    inputId = "riskText_env",
+                    value   = "What's your environmental risk for AMD?")
   })
   
   observeEvent(input$execute_env, {
@@ -447,6 +471,17 @@ server <- function(input, output, session) {
                     inputId = "envRisk",
                     value   = as.character(risk_env))
     
+    # Update text box to show info about risk
+    z_score = z_score_calc(risk = risk_env, or_vec = combs_env$comb.or)
+    
+    updateTextInput(session = session, 
+                    inputId = "riskText_env",
+                    value   = paste0("With a risk = ",
+                                     risk,
+                                     " your subject is ",
+                                     z_score,
+                                     " standard deviations away from the mean risks."))
+    
     # set plot
     ## for env tab
     pl1_env <- reactive({risk_plot(combs_env, calculated_risk = risk_env)})
@@ -457,5 +492,4 @@ server <- function(input, output, session) {
     }
   })
 }
-
 shinyApp(ui, server)
