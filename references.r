@@ -1,5 +1,0 @@
-ref <- readRDS(paste0(getwd(),"/data/reference/genetic_risk.rds"))
-df <- data.frame(gene = unique(ref$gene), selected_genotype = NA, or.norm = NA)
-combs <- readxl::read_xlsx(paste0(getwd(),"/data/reference/combinations.xlsx"))
-df_casi <- read.xlsx(paste0(getwd(),"/data/reference/cases risks.xlsx"))
-df_ctrl <- read.xlsx(paste0(getwd(),"/data/reference/ctrls risks.xlsx"))
