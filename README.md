@@ -16,7 +16,7 @@ Genetic risk loci were identified based on ... and environmental risk ...
 
 ## How to install and use
 
-- To set the environment for NeuroPGx local use, R and RStudio must be installed.
+- To set the environment for **SoftwareName** local use, R and RStudio must be installed.
  1. Download [R](https://cran.r-project.org/) for your operating system (Windows, Linux or macOS) and install using the default settings.
  2. Download [RStudio](https://www.rstudio.com/products/rstudio/download/) Free Desktop version and install using the default settings.
 
@@ -25,7 +25,7 @@ Genetic risk loci were identified based on ... and environmental risk ...
 - Open the `dashboard.r` file using RStudio, then click on the green `run app` button at the top-right corner of the central panel window, as shown in the image below.
 
 ## License
-NeuroPGx is licensed under the <a href="https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0)" target="\_blank">AGPLv3 license</a>. As a summary, the AGPLv3 license requires attribution, including copyright and license information in copies of the software, stating changes if the code is modified, and disclosure of all source code. Details are in the LICENSE file. See our [papers](#Papers) section for details and citations.
+**SoftwareName** is licensed under the <a href="https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0)" target="\_blank">AGPLv3 license</a>. As a summary, the AGPLv3 license requires attribution, including copyright and license information in copies of the software, stating changes if the code is modified, and disclosure of all source code. Details are in the LICENSE file. See our [papers](#Papers) section for details and citations.
 
 ## Papers
 
