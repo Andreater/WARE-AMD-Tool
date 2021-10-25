@@ -2,7 +2,7 @@
 ##### empty
 empty_risk_plot <- function(combs){
   temp = combs %>% 
-    filter(!log.comb.or <= quantiles[1] & !log.comb.or >= quantiles[2])
+    filter(!log.comb.or <= (quantiles[1] - risk_plot_lims_expand) & !log.comb.or >= (quantiles[2] + risk_plot_lims_expand)) # set bar lims
   
   temp %>% 
     ggplot() +
@@ -29,16 +29,16 @@ empty_risk_plot <- function(combs){
 ###### with subject
 risk_plot <- function(combs, calculated_risk) {
   
-  if (log(calculated_risk) >= quantiles[[2]]) {
-    calculated_risk = exp(quantiles[[2]])
-  } else if (log(calculated_risk) <= quantiles[[1]]) {
-    calculated_risk = exp(quantiles[[1]])
+  if (log(calculated_risk) >= (quantiles[[2]] + risk_plot_lims_expand)) {
+    calculated_risk = exp(quantiles[[2]] + risk_plot_lims_expand)
+  } else if (log(calculated_risk) <= quantiles[[1]] - risk_plot_lims_expand) {
+    calculated_risk = exp(quantiles[[1]] - risk_plot_lims_expand)
   } else { 
     calculated_risk = calculated_risk 
   }
   
   temp = combs %>% 
-    filter(!log.comb.or <= quantiles[1] & !log.comb.or >= quantiles[2])
+    filter(!log.comb.or <= (quantiles[1] - risk_plot_lims_expand) & !log.comb.or >= (quantiles[2] + risk_plot_lims_expand))
   
   temp %>% 
     ggplot() +
@@ -161,7 +161,7 @@ draw_legend <- function(){
 }
 
 ################# DENSITY ##################
-##### empties
+##### empties ----
 empty_density_plot_cases <- function(calculated_risk){
   x <- df_casi$log.comb.or
   y <- density(x, n = 2^12,
@@ -187,12 +187,12 @@ empty_density_plot_cases <- function(calculated_risk){
     geom_vline(xintercept = quantiles[1], linetype = 5) +
     geom_vline(xintercept = quantiles[2], linetype = 5) +
     annotate(geom = "text",
-             x = quantiles[1] - low_risk_text_dist_annot,
+             x = quantiles[1] - low_risk_text_dist_annot_cases,
              y = y_text_annot_dens,
              label = "Low risk\nzone",
              size = text_size_annot) +
     annotate(geom = "text",
-             x = quantiles[2] + high_risk_text_dist_annot,
+             x = quantiles[2] + high_risk_text_dist_annot_cases,
              y = y_text_annot_dens,
              label = "High risk\nzone",
              size = text_size_annot) +
@@ -234,12 +234,12 @@ empty_density_plot_ctrl <- function(calculated_risk){
     geom_vline(xintercept = quantiles[1], linetype = 5) +
     geom_vline(xintercept = quantiles[2], linetype = 5) +
     annotate(geom = "text",
-             x = quantiles[1] - low_risk_text_dist_annot,
+             x = quantiles[1] - low_risk_text_dist_annot_ctrl,
              y = y_text_annot_dens,
              label = "Low risk\nzone",
              size = text_size_annot) +
     annotate(geom = "text",
-             x = quantiles[2] + high_risk_text_dist_annot,
+             x = quantiles[2] + high_risk_text_dist_annot_ctrl,
              y = y_text_annot_dens,
              label = "High risk\nzone",
              size = text_size_annot) +
@@ -256,7 +256,7 @@ empty_density_plot_ctrl <- function(calculated_risk){
          title = "Risk distribution in general population")
 }
 
-##### with subject
+##### with subject ----
 density_plot_cases <- function(calculated_risk){
   
   if (log(calculated_risk) > 7) {
@@ -290,19 +290,19 @@ density_plot_cases <- function(calculated_risk){
     geom_vline(xintercept = quantiles[1], linetype = 5) +
     geom_vline(xintercept = quantiles[2], linetype = 5) +
     annotate(geom = "text",
-             x = quantiles[1] - low_risk_text_dist_annot,
+             x = quantiles[1] - low_risk_text_dist_annot_cases,
              y = y_text_annot_dens,
              label = "Low risk\nzone",
              size = text_size_annot) +
     annotate(geom = "text",
-             x = quantiles[2] + high_risk_text_dist_annot,
+             x = quantiles[2] + high_risk_text_dist_annot_cases,
              y = y_text_annot_dens,
              label = "High risk\nzone",
              size = text_size_annot) +
     annotate(geom = "text",
              x = log(calculated_risk) - subj_text_dist_annot,
              y = 0.15,
-             label = "Subject →",
+             label = "Subject -->",
              size = text_size_annot) +
     theme_classic() +
     theme(text = element_text(size = density_text_size),
@@ -350,19 +350,19 @@ density_plot_ctrl <- function(calculated_risk){
     geom_vline(xintercept = quantiles[1], linetype = 5) +
     geom_vline(xintercept = quantiles[2], linetype = 5) +
     annotate(geom = "text",
-             x = quantiles[1] - low_risk_text_dist_annot,
+             x = quantiles[1] - low_risk_text_dist_annot_ctrl,
              y = y_text_annot_dens,
              label = "Low risk\nzone",
              size = text_size_annot) +
     annotate(geom = "text",
-             x = quantiles[2] + high_risk_text_dist_annot,
+             x = quantiles[2] + high_risk_text_dist_annot_ctrl,
              y = y_text_annot_dens,
              label = "High risk\nzone",
              size = text_size_annot) +
     annotate(geom = "text",
              x = log(calculated_risk) - subj_text_dist_annot,
              y = 0.15,
-             label = "Subject →",
+             label = "Subject -->",
              size = text_size_annot) +
     theme_classic() +
     theme(text = element_text(size = density_text_size),
