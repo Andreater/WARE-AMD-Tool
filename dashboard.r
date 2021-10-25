@@ -1,8 +1,8 @@
 source("libraries.r")
 source("references.r")
 source("parameters.r")
-source("plots.r")
 source("funcs.r")
+source("plots.r")
 
 # Disable scientific notation
 options(scipen=999)
@@ -137,7 +137,7 @@ ui <- dashboardPage(
                   title = strong("RISK DISTRIBUTION"),
                   
                   h4(style="text-align: justify;",
-                     "The graphics below represent the distribution of genotypes in AMD patients and general population. The black line shows your individualized genetic risk according to genotypes reported in “personal genotype” box."),
+                     "The graphics below represent the distribution of genotypes in AMD patients and general population. The dashed lines delimitate low and high risk zones, and the solid red line shows your individualized genetic risk according to genotypes reported in the “personal genotype” box."),
                   br()
                 )
               ),
@@ -402,7 +402,7 @@ server <- function(input, output, session) {
       
       
       # Update text box to show info about risk
-      z_score = z_score_calc(risk = risk, or_vec = df_casi$comb.or)
+      z_score = z_score_calc(risk = log(risk), or_vec = df_casi$log.comb.or)
       
       updateTextInput(session = session, 
                       inputId = "riskText",
@@ -472,15 +472,15 @@ server <- function(input, output, session) {
                     value   = as.character(risk_env))
     
     # Update text box to show info about risk
-    z_score = z_score_calc(risk = risk_env, or_vec = combs_env$comb.or)
+    z_score = z_score_calc(risk = log(risk_env), or_vec = combs_env$log.comb.or)
     
     updateTextInput(session = session, 
                     inputId = "riskText_env",
                     value   = paste0("With a risk = ",
-                                     risk,
+                                     risk_env,
                                      " your subject is ",
                                      z_score,
-                                     " standard deviations away from the mean risks."))
+                                     " standard deviations away from the mean of risks."))
     
     # set plot
     ## for env tab

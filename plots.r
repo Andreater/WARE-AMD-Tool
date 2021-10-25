@@ -1,14 +1,18 @@
 ################# RISK ##################
 ##### empty
 empty_risk_plot <- function(combs){
-  combs %>% 
+  temp = combs %>% 
+    filter(!log.comb.or <= quantiles[1] & !log.comb.or >= quantiles[2])
+  
+  temp %>% 
     ggplot() +
     aes(x = log.comb.or, y = index) +
     geom_line(aes(color = log.comb.or,
                   size = risk_plot_geom_line_size)) +
     scale_colour_gradient2(low = colorpalette[1],
                            mid = colorpalette[2],
-                           high = colorpalette[3]) +
+                           high = colorpalette[3],
+                           midpoint = (range(temp$log.comb.or)[1] + range(temp$log.comb.or)[2]) / 2) +
     theme_minimal() +
     theme(axis.title.x=element_blank(),
           axis.text.x=element_blank(),
@@ -25,14 +29,26 @@ empty_risk_plot <- function(combs){
 ###### with subject
 risk_plot <- function(combs, calculated_risk) {
   
-  combs %>% 
+  if (log(calculated_risk) >= quantiles[[2]]) {
+    calculated_risk = exp(quantiles[[2]])
+  } else if (log(calculated_risk) <= quantiles[[1]]) {
+    calculated_risk = exp(quantiles[[1]])
+  } else { 
+    calculated_risk = calculated_risk 
+  }
+  
+  temp = combs %>% 
+    filter(!log.comb.or <= quantiles[1] & !log.comb.or >= quantiles[2])
+  
+  temp %>% 
     ggplot() +
     aes(x = log.comb.or, y = index) +
     geom_line(aes(color = log.comb.or,
                   size = risk_plot_geom_line_size)) +
     scale_colour_gradient2(low = colorpalette[1],
                            mid = colorpalette[2],
-                           high = colorpalette[3])+
+                           high = colorpalette[3],
+                           midpoint = (range(temp$log.comb.or)[1] + range(temp$log.comb.or)[2]) / 2) +
     geom_point(aes(x = log(calculated_risk), y = 1), 
                color = "black",
                shape = risk_plot_geom_point_shape,
@@ -152,12 +168,34 @@ empty_density_plot_cases <- function(calculated_risk){
                adjust = 0.9)
   
   ggplot(data.frame(x = y$x, y = y$y), aes(x, y)) +
+    annotate("rect",
+             xmin = min(y$x), xmax = quantiles[1],
+             ymin = min(y$y), ymax = max(y$y),
+             alpha = risk_zone_shade_alpha,
+             fill = colorpalette[1]) +
+    annotate("rect",
+             xmin = quantiles[2], xmax = max(y$x),
+             ymin = min(y$y), ymax = max(y$y),
+             alpha = risk_zone_shade_alpha,
+             fill = colorpalette[3]) +
     geom_line(colour = "grey25",
               size = 1.2) + 
     geom_segment(aes(xend = x, yend = 0, colour = x)) + 
     scale_color_gradient2(low = colorpalette[1],
                           mid = colorpalette[2],
                           high = colorpalette[3]) +
+    geom_vline(xintercept = quantiles[1], linetype = 5) +
+    geom_vline(xintercept = quantiles[2], linetype = 5) +
+    annotate(geom = "text",
+             x = quantiles[1] - low_risk_text_dist_annot,
+             y = y_text_annot_dens,
+             label = "Low risk\nzone",
+             size = text_size_annot) +
+    annotate(geom = "text",
+             x = quantiles[2] + high_risk_text_dist_annot,
+             y = y_text_annot_dens,
+             label = "High risk\nzone",
+             size = text_size_annot) +
     theme_classic() +
     theme(text = element_text(size = density_text_size),
           legend.position = "none",
@@ -177,12 +215,34 @@ empty_density_plot_ctrl <- function(calculated_risk){
                adjust = 0.9)
   
   ggplot(data.frame(x = y$x, y = y$y), aes(x, y)) +
+    annotate("rect",
+             xmin = min(x)-0.26, xmax = quantiles[1],
+             ymin = min(y$y), ymax = max(y$y),
+             alpha = risk_zone_shade_alpha,
+             fill = colorpalette[1]) +
+    annotate("rect",
+             xmin = quantiles[2], xmax = max(y$x),
+             ymin = min(y$y), ymax = max(y$y),
+             alpha = risk_zone_shade_alpha,
+             fill = colorpalette[3]) +
     geom_line(colour = "grey25",
               size = 1.2) + 
     geom_segment(aes(xend = x, yend = 0, colour = x)) + 
     scale_color_gradient2(low = colorpalette[1],
                           mid = colorpalette[2],
                           high = colorpalette[3]) +
+    geom_vline(xintercept = quantiles[1], linetype = 5) +
+    geom_vline(xintercept = quantiles[2], linetype = 5) +
+    annotate(geom = "text",
+             x = quantiles[1] - low_risk_text_dist_annot,
+             y = y_text_annot_dens,
+             label = "Low risk\nzone",
+             size = text_size_annot) +
+    annotate(geom = "text",
+             x = quantiles[2] + high_risk_text_dist_annot,
+             y = y_text_annot_dens,
+             label = "High risk\nzone",
+             size = text_size_annot) +
     theme_classic() +
     theme(text = element_text(size = density_text_size),
           legend.position = "none",
@@ -208,13 +268,42 @@ density_plot_cases <- function(calculated_risk){
                adjust = 0.9)
   
   ggplot(data.frame(x = y$x, y = y$y), aes(x, y)) +
+    annotate("rect",
+             xmin = min(y$x), xmax = quantiles[1],
+             ymin = min(y$y), ymax = max(y$y),
+             alpha = risk_zone_shade_alpha,
+             fill = colorpalette[1]) +
+    annotate("rect",
+             xmin = quantiles[2], xmax = max(y$x),
+             ymin = min(y$y), ymax = max(y$y),
+             alpha = risk_zone_shade_alpha,
+             fill = colorpalette[3]) +
     geom_line(colour = "grey25",
               size = 1.2) + 
     geom_segment(aes(xend = x, yend = 0, colour = x)) + 
     scale_color_gradient2(low = colorpalette[1],
                           mid = colorpalette[2],
                           high = colorpalette[3]) +
-    geom_vline(xintercept = log(calculated_risk)) +
+    geom_vline(xintercept = log(calculated_risk),
+               size = 1.25,
+               color = subj_line_col) +
+    geom_vline(xintercept = quantiles[1], linetype = 5) +
+    geom_vline(xintercept = quantiles[2], linetype = 5) +
+    annotate(geom = "text",
+             x = quantiles[1] - low_risk_text_dist_annot,
+             y = y_text_annot_dens,
+             label = "Low risk\nzone",
+             size = text_size_annot) +
+    annotate(geom = "text",
+             x = quantiles[2] + high_risk_text_dist_annot,
+             y = y_text_annot_dens,
+             label = "High risk\nzone",
+             size = text_size_annot) +
+    annotate(geom = "text",
+             x = log(calculated_risk) - subj_text_dist_annot,
+             y = 0.15,
+             label = "Subject →",
+             size = text_size_annot) +
     theme_classic() +
     theme(text = element_text(size = density_text_size),
           legend.position = "none",
@@ -239,13 +328,42 @@ density_plot_ctrl <- function(calculated_risk){
                adjust = 0.9)
   
   ggplot(data.frame(x = y$x, y = y$y), aes(x, y)) +
+    annotate("rect",
+             xmin = min(x)-0.26, xmax = quantiles[1],
+             ymin = min(y$y), ymax = max(y$y),
+             alpha = risk_zone_shade_alpha,
+             fill = colorpalette[1]) +
+    annotate("rect",
+             xmin = quantiles[2], xmax = max(y$x),
+             ymin = min(y$y), ymax = max(y$y),
+             alpha = risk_zone_shade_alpha,
+             fill = colorpalette[3]) +
     geom_line(colour = "grey25",
               size = 1.2) + 
     geom_segment(aes(xend = x, yend = 0, colour = x)) + 
     scale_color_gradient2(low = colorpalette[1],
                           mid = colorpalette[2],
                           high = colorpalette[3]) +
-    geom_vline(xintercept = log(calculated_risk)) +
+    geom_vline(xintercept = log(calculated_risk),
+               size = 1.25,
+               color = subj_line_col) +
+    geom_vline(xintercept = quantiles[1], linetype = 5) +
+    geom_vline(xintercept = quantiles[2], linetype = 5) +
+    annotate(geom = "text",
+             x = quantiles[1] - low_risk_text_dist_annot,
+             y = y_text_annot_dens,
+             label = "Low risk\nzone",
+             size = text_size_annot) +
+    annotate(geom = "text",
+             x = quantiles[2] + high_risk_text_dist_annot,
+             y = y_text_annot_dens,
+             label = "High risk\nzone",
+             size = text_size_annot) +
+    annotate(geom = "text",
+             x = log(calculated_risk) - subj_text_dist_annot,
+             y = 0.15,
+             label = "Subject →",
+             size = text_size_annot) +
     theme_classic() +
     theme(text = element_text(size = density_text_size),
           legend.position = "none",

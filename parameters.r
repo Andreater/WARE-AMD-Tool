@@ -13,6 +13,13 @@ intorno_dim = 0.15
 
 # plots parameters
 colorpalette <- c("olivedrab2", "#ccd93d", "orangered2", "grey75")
+subj_line_col = "red3"
+y_text_annot_dens = 0.09
+text_size_annot = 5.25
+subj_text_dist_annot = 0.8
+high_risk_text_dist_annot = 1
+low_risk_text_dist_annot = 0.75
+risk_zone_shade_alpha = 0.4
 risk_plot_geom_line_size = 10
 risk_plot_geom_point_shape = 18
 risk_plot_geom_point_size = 4
@@ -27,3 +34,4 @@ pie3d_shade = 0.5
 pie3d_mar = c(1,1,1,1)
 density_text_size = 15
 lims <- c(-9,7)
+quantiles = quantile(df_ctrl$log.comb.or, probs = c(0.05, 0.99))
