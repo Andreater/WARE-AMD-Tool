@@ -13,6 +13,18 @@ empty_risk_plot <- function(combs){
                            mid = colorpalette[2],
                            high = colorpalette[3],
                            midpoint = (range(temp$log.comb.or)[1] + range(temp$log.comb.or)[2]) / 2) +
+    geom_vline(xintercept = quantiles[1], linetype = 5) + 
+    geom_vline(xintercept = quantiles[2], linetype = 5) + 
+    annotate(geom = "text",
+             x = quantiles[1] - risk_plot_text_dist_x,
+             y = risk_plot_text_dist_y,
+             label = "Low risk zone\n\n",
+             size = text_size_annot) +
+    annotate(geom = "text",
+             x = quantiles[2] + risk_plot_text_dist_x,
+             y = risk_plot_text_dist_y,
+             label = "High risk zone\n\n",
+             size = text_size_annot) +
     theme_minimal() +
     theme(axis.title.x=element_blank(),
           axis.text.x=element_blank(),
@@ -53,6 +65,18 @@ risk_plot <- function(combs, calculated_risk) {
                color = "black",
                shape = risk_plot_geom_point_shape,
                size = risk_plot_geom_point_size) +
+    geom_vline(xintercept = quantiles[1], linetype = 5) + 
+    geom_vline(xintercept = quantiles[2], linetype = 5) + 
+    annotate(geom = "text",
+             x = quantiles[1] - risk_plot_text_dist_x,
+             y = risk_plot_text_dist_y,
+             label = "Low risk zone\n\n",
+             size = text_size_annot) +
+    annotate(geom = "text",
+             x = quantiles[2] + risk_plot_text_dist_x,
+             y = risk_plot_text_dist_y,
+             label = "High risk zone\n\n",
+             size = text_size_annot) +
     theme_minimal() +
     theme(axis.title.x=element_blank(),
           axis.text.x=element_blank(),
