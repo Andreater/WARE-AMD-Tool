@@ -1,7 +1,7 @@
 # User interface ----
 ui <- dashboardPage(
   skin = "green",
-  title = "Wet AMD Risk Evaluation"
+  title = "Wet AMD Risk Evaluation",
   dashboardHeader(title = strong("WARE")),
   
   dashboardSidebar(disable = F,
