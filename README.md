@@ -1,4 +1,4 @@
-# **WARE** - **Wet** **A**MD **R**isk **E**valuation
+# WARE - ==Wet== ==A==MD ==R==isk ==E==valuation
 
 WARE is a software for calculating the risk of Age-Related Macular Degeneration (AMD), taking into account relevant genetic and environmental factors. It aims to help clinicians in reporting risk assessment upon patient evaluation. 
 A pleasant and easy-to-use web page interface guides the user in setting genotypes for selected SNPs and calculates total genetic risk, also showing nice plots about absolute and relative risk with respect to AMD and general population. Subsequently, the user can take into account patient's Familiarity and Smoke, calculating a total risk for both genetic and environmental risk factors.
