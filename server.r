@@ -215,7 +215,7 @@ server <- function(input, output, session) {
     # set risk text box
     updateTextInput(session = session, 
                     inputId = "riskText_env",
-                    value   = "What's your environmental risk for AMD?")
+                    value   = "What's your non-genetic risk for AMD?")
   })
   
   observeEvent(input$execute_env, {
@@ -236,7 +236,7 @@ server <- function(input, output, session) {
       
       updateTextInput(session = session, 
                       inputId = "envRisk",
-                      value   = "You must set a value for both the environmental factors!")
+                      value   = "You must set a value for both the non-genetic factors!")
     } else {
       # Calculate risk by multiplying Odd Ratios
       risk_env = round(prod(df_env$or) * risk, round_to_decimals)

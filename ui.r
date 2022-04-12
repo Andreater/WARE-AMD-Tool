@@ -11,7 +11,7 @@ ui <- dashboardPage(
                        tabName = "gen"
                      ),
                      menuItem(
-                       "Environmental risk",
+                       "Non-genetic risk",
                        tabName = "env"
                      )
                    )),
@@ -32,7 +32,7 @@ ui <- dashboardPage(
                   title = strong("INDIVIDUALIZED GENETIC AMD RISK"),
                   
                   h4(style="text-align: justify;",
-                     "Genetic risk for wet AMD is calculated according to [ref] and it ranges between 0.0002 and 3418.366. A graphical representation of your position in the scale of genetic risks is reported below.")
+                     "Genetic risk for wet AMD is calculated according to", a("Cascella et al., 2018", href = "https://doi.org/10.18632/oncotarget.23241"), "and it ranges between 0.0002 and 3418.366. A graphical representation of your position in the scale of genetic risks is reported below.")
                   
                 )
               ),
@@ -157,10 +157,10 @@ ui <- dashboardPage(
       tabItem(tabName = "env",
               fluidRow(
                 box(
-                  title = strong("ENVIRONMENTAL RISK EXPOSURE"),
+                  title = strong("NON-GENETIC RISK EXPOSURE"),
                   
                   h4(style="text-align: justify;",
-                     "Environmental risk factors are reported below. Make your selection based on patient's profile and click on the “Execute” button."),
+                     "Non-genetic risk factors are reported below. Make your selection based on patient's profile and click on the “Execute” button."),
                   br(),
                   br()
                 ),
@@ -168,7 +168,7 @@ ui <- dashboardPage(
                   title = strong("INDIVIDUALIZED GENETIC AMD RISK"),
                   
                   h4(style="text-align: justify;",
-                     "Environmental risk factors are combined with genetic risk for wet AMD, calculated according to [ref]. When genetic risk is combined with environmental risk it ranges between 0.0002 and 23313.26. A graphical representation of your position in the scale of combined environmental and genetic risks is reported below.")
+                     "Non-genetic risk factors are combined with genetic risk for wet AMD, calculated according to ", a("Cascella et al., 2018", href = "https://doi.org/10.18632/oncotarget.23241", .noWS = "after"), ". When genetic risk is combined with non-genetic risk it ranges between 0.0002 and 23313.26. A graphical representation of your position in the scale of combined non-genetic and genetic risks is reported below.")
                 )
               ),
               fluidRow(
@@ -193,18 +193,18 @@ ui <- dashboardPage(
                 ),
                 box(
                   textInput(inputId = "envRisk",
-                            label   = "Environmental risk",
+                            label   = "Non-genetic risk",
                             value   = "")
                 ),
                 box(
-                  title = "Environmental risk plot",
+                  title = "Non-genetic risk plot",
                   
                   plotOutput(outputId = "plot1_env",
                              height = plot1_height),
                   
                   textInput(inputId = "riskText_env",
                             label   = NULL,
-                            value   = "What's your environmental risk for AMD?")
+                            value   = "What's your non-genetic risk for AMD?")
                 )
               )
       )
