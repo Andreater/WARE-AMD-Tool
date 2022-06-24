@@ -19,7 +19,7 @@ WARE is an open-source platform-independent browser-based interface for AMD risk
 WARE is licensed under the <a href="https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0)" target="\_blank">AGPLv3 license</a>. As a summary, the AGPLv3 license requires attribution, including copyright and license information in copies of the software, stating changes if the code is modified, and disclosure of all source code. Details are in the LICENSE file. See our [papers](#Papers) section for details and citations.
 
 ## Papers
+Fabrizio, C.; Termine, A.; Caputo, V.; Megalizzi, D.; Zampatti, S.; Falsini, B.; Cusumano, A.; Eandi, C.M.; Ricci, F.; Giardina, E.; et al. WARE: Wet AMD Risk-Evaluation Tool as a Clinical Decision-Support System Integrating Genetic and Non-Genetic Factors. J. Pers. Med. 2022, 12, 1034. https://doi.org/10.3390/jpm12071034
 
-**Under construction...** 
 
-Link to paper: coming soon
+[Link to paper](https://www.mdpi.com/2075-4426/12/7/1034)
